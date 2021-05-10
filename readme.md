@@ -1,3 +1,8 @@
+Custom Nginx buildpack with extra modules
+OpenResty - lua-nginx-module: https://github.com/openresty/lua-nginx-module/
+
+Original buildpack below
+
 # Heroku Buildpack: NGINX
 
 Nginx-buildpack vendors NGINX inside a dyno and connects NGINX to an app server via UNIX domain sockets.
