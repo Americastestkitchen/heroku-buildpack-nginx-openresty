@@ -26,6 +26,8 @@ set_misc_url=https://github.com/openresty/set-misc-nginx-module/archive/v${SET_M
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
+export LUAJIT_LIB=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/src
+export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/src
 cd $temp_dir
 echo "Temp dir: $temp_dir"
 
@@ -70,7 +72,7 @@ echo "Downloading $set_misc_url"
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION}
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
@@ -89,7 +91,7 @@ echo "Downloading $set_misc_url"
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx-debug \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION}
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
