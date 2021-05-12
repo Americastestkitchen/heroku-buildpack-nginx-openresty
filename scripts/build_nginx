@@ -26,8 +26,6 @@ set_misc_url=https://github.com/openresty/set-misc-nginx-module/archive/v${SET_M
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
-export LUAJIT_LIB=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib
-export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/include/luajit-2.1
 cd $temp_dir
 echo "Temp dir: $temp_dir"
 
@@ -66,7 +64,11 @@ echo "Downloading $set_misc_url"
 (cd nginx-${NGINX_VERSION} && curl -L $set_misc_url | tar xvz)
 
 release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
-mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/luajit
+mkdir $release_dir/nginx
+mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/nginx/luajit
+
+export LUAJIT_LIB=$release_dir/nginx/luajit
+export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/include/luajit-2.1
 
 # This will build `nginx`
 (
@@ -78,7 +80,7 @@ mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx \
-    --with-ld-opt="-Wl,-rpath, $release_dir/luajit/lib" \
+    --with-ld-opt="-Wl,-rpath,$release_dir/nginx/luajit/" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
@@ -98,7 +100,7 @@ mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx-debug \
-    --with-ld-opt="-Wl,-rpath, $release_dir/luajit/lib" \
+    --with-ld-opt="-Wl,-rpath,$release_dir/nginx/luajit/" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
