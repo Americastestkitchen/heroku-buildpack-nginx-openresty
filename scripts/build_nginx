@@ -26,8 +26,8 @@ set_misc_url=https://github.com/openresty/set-misc-nginx-module/archive/v${SET_M
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
-export LUAJIT_LIB=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/src
-export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/src
+export LUAJIT_LIB=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib
+export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/include/luajit-2.1
 cd $temp_dir
 echo "Temp dir: $temp_dir"
 
@@ -50,7 +50,7 @@ echo "Downloading $luajit_url"
 (
   cd nginx-${NGINX_VERSION} && curl -L $luajit_url | tar xvz
   cd ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}
-  make install
+  make PREFIX=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/ install
 )
 
 echo "Downloading $ngx_devel_url"
@@ -72,7 +72,7 @@ echo "Downloading $set_misc_url"
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx \
-    --with-ld-opt="-Wl,-rpath,${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/src" \
+    --with-ld-opt="-Wl,-rpath,${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
