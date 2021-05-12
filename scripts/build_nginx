@@ -49,9 +49,6 @@ echo "Downloading $luajit_url"
   cd nginx-${NGINX_VERSION} && curl -L $luajit_url | tar xvz
   cd ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}
   make PREFIX=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/ install
-  ls
-  cd lib
-  ls
 )
 
 echo "Downloading $ngx_devel_url"
@@ -109,8 +106,8 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
   make install
 )
 
-cp /tmp/nginx/sbin/nginx $release_dir/nginx
-cp /tmp/nginx-debug/sbin/nginx $release_dir/nginx-debug
-cp /tmp/nginx/conf/mime.types $release_dir/mime.types
+cp -r /tmp/nginx/sbin/nginx $release_dir/nginx
+cp -r /tmp/nginx-debug/sbin/nginx $release_dir/nginx-debug
+cp -r /tmp/nginx/conf/mime.types $release_dir/mime.types
 tar -zcvf /tmp/nginx-"${STACK}".tgz -C $release_dir .
-cp /tmp/nginx-"${STACK}".tgz $1
+cp -r /tmp/nginx-"${STACK}".tgz $1
