@@ -51,6 +51,9 @@ echo "Downloading $luajit_url"
   cd nginx-${NGINX_VERSION} && curl -L $luajit_url | tar xvz
   cd ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}
   make PREFIX=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/ install
+  ls
+  cd lib
+  ls
 )
 
 echo "Downloading $ngx_devel_url"
@@ -92,6 +95,7 @@ echo "Downloading $set_misc_url"
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx-debug \
+    --with-ld-opt="-Wl,-rpath,${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
@@ -107,3 +111,4 @@ cp /tmp/nginx-debug/sbin/nginx $release_dir/nginx-debug
 cp /tmp/nginx/conf/mime.types $release_dir/mime.types
 tar -zcvf /tmp/nginx-"${STACK}".tgz -C $release_dir .
 cp /tmp/nginx-"${STACK}".tgz $1
+mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION} $release_dir/luajit
