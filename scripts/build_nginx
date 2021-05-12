@@ -77,7 +77,7 @@ release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx \
-    --with-ld-opt="-Wl,-rpath,${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib" \
+    --with-ld-opt="-Wl,-rpath, luajit/lib" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
