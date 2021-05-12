@@ -26,6 +26,8 @@ http {
 	# Must read the body in 5 seconds.
 	client_body_timeout 5;
 
+	lua_load_resty_core off;
+
 	upstream app_server {
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	}
