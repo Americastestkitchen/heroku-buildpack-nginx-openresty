@@ -15,6 +15,7 @@ mkdir -p "$BUILD_DIR/nginx"
 tar -zxvf "nginx-$STACK".tgz -C "$BUILD_DIR/nginx"
 
 cp "$BUILD_DIR/nginx/nginx" "$BUILD_DIR/bin/nginx"
+cp "$BUILD_DIR/nginx/luajit" "$BUILD_DIR/bin/luajit"
 cp "$BUILD_DIR/nginx/nginx-debug" "$BUILD_DIR/bin/nginx-debug"
 
 nginx_version=$($BUILD_DIR/bin/nginx -V 2>&1 | head -1 | awk '{ print $NF }')
