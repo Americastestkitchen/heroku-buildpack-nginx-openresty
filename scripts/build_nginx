@@ -61,10 +61,9 @@ echo "Downloading $set_misc_url"
 (cd nginx-${NGINX_VERSION} && curl -L $set_misc_url | tar xvz)
 
 release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
-mkdir $release_dir/nginx
-mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/nginx/luajit
+mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/luajit
 
-export LUAJIT_LIB=$release_dir/nginx/luajit
+export LUAJIT_LIB=$release_dir/luajit
 export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/include/luajit-2.1
 
 # This will build `nginx`
@@ -77,7 +76,7 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx \
-    --with-ld-opt="-Wl,-rpath,$release_dir/nginx/luajit/" \
+    --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
@@ -97,7 +96,7 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx-debug \
-    --with-ld-opt="-Wl,-rpath,$release_dir/nginx/luajit/" \
+    --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
@@ -106,8 +105,8 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
   make install
 )
 
-cp -r /tmp/nginx/sbin/nginx $release_dir/nginx
-cp -r /tmp/nginx-debug/sbin/nginx $release_dir/nginx-debug
-cp -r /tmp/nginx/conf/mime.types $release_dir/mime.types
+cp /tmp/nginx/sbin/nginx $release_dir/nginx
+cp /tmp/nginx-debug/sbin/nginx $release_dir/nginx-debug
+cp /tmp/nginx/conf/mime.types $release_dir/mime.types
 tar -zcvf /tmp/nginx-"${STACK}".tgz -C $release_dir .
-cp -r /tmp/nginx-"${STACK}".tgz $1
+cp /tmp/nginx-"${STACK}".tgz $1
