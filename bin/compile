@@ -16,6 +16,9 @@ tar -zxvf "nginx-$STACK".tgz -C "$BUILD_DIR/nginx"
 
 cp "$BUILD_DIR/nginx/nginx" "$BUILD_DIR/bin/nginx"
 cp "$BUILD_DIR/nginx/nginx-debug" "$BUILD_DIR/bin/nginx-debug"
+cp -r "$BUILD_DIR/nginx/luajit" "$BUILD_DIR/bin/luajit"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/bin/luajit
+ldd /app/bin/nginx
 
 nginx_version=$($BUILD_DIR/bin/nginx -V 2>&1 | head -1 | awk '{ print $NF }')
 echo "-----> nginx-buildpack: Installed ${nginx_version} to app/bin"
