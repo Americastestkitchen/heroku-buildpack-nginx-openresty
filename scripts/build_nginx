@@ -14,6 +14,8 @@ NGX_DEVEL_VERSION=${NGX_DEVEL_VERSION-0.3.1}
 LUA_VERSION=${LUA_VERSION-0.10.15}
 SET_MISC_VERSION=${SET_MISC_VERSION-0.32}
 
+
+# Modules
 nginx_tarball_url=https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 pcre_tarball_url=https://ftp.pcre.org/pub/pcre/pcre-${PCRE_VERSION}.tar.gz
 headers_more_nginx_module_url=https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz
@@ -23,6 +25,7 @@ luajit_url=https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.g
 ngx_devel_url=https://github.com/vision5/ngx_devel_kit/archive/v${NGX_DEVEL_VERSION}.tar.gz
 lua_url=https://github.com/openresty/lua-nginx-module/archive/v${LUA_VERSION}.tar.gz
 set_misc_url=https://github.com/openresty/set-misc-nginx-module/archive/v${SET_MISC_VERSION}.tar.gz
+aws_auth_url=https://github.com/kaltura/nginx-aws-auth-module/archive/1.0.1.tar.gz
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -60,6 +63,9 @@ echo "Downloading $lua_url"
 echo "Downloading $set_misc_url"
 (cd nginx-${NGINX_VERSION} && curl -L $set_misc_url | tar xvz)
 
+echo "Downloading $aws_auth_url"
+(cd nginx-${NGINX_VERSION} && curl -L $aws_auth_url | tar xvz)
+
 release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/luajit
 
@@ -81,7 +87,8 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION}
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1
   make install
 )
 
@@ -101,7 +108,8 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION}
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1
   make install
 )
 
