@@ -26,6 +26,7 @@ ngx_devel_url=https://github.com/vision5/ngx_devel_kit/archive/v${NGX_DEVEL_VERS
 lua_url=https://github.com/openresty/lua-nginx-module/archive/v${LUA_VERSION}.tar.gz
 set_misc_url=https://github.com/openresty/set-misc-nginx-module/archive/v${SET_MISC_VERSION}.tar.gz
 aws_auth_url=https://github.com/kaltura/nginx-aws-auth-module/archive/1.0.1.tar.gz
+ngx_subs_url=https://github.com/yaoweibin/ngx_http_substitutions_filter_module/archive/v0.6.4.tar.gz
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -66,6 +67,9 @@ echo "Downloading $set_misc_url"
 echo "Downloading $aws_auth_url"
 (cd nginx-${NGINX_VERSION} && curl -L $aws_auth_url | tar xvz)
 
+echo "Downloading $ngx_subs_url"
+(cd nginx-${NGINX_VERSION} && curl -L $ngx_subs_url | tar xvz)
+
 release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/luajit
 
@@ -88,7 +92,8 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1 \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_substitutions_filter_module-0.6.4
   make install
 )
 
@@ -109,7 +114,8 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1 \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_substitutions_filter_module-0.6.4
   make install
 )
 
