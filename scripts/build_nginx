@@ -9,10 +9,6 @@ PCRE_VERSION=${PCRE_VERSION-8.44}
 HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION-0.33}
 ZLIB_VERSION=${ZLIB_VERSION-1.2.11}
 UUID4_VERSION=${UUID4_VERSION-master}
-LUAJIT_VERSION=${LUAJIT_VERSION-2.1-20210510}
-NGX_DEVEL_VERSION=${NGX_DEVEL_VERSION-0.3.1}
-LUA_VERSION=${LUA_VERSION-0.10.15}
-SET_MISC_VERSION=${SET_MISC_VERSION-0.32}
 
 
 # Modules
@@ -21,10 +17,6 @@ pcre_tarball_url=https://ftp.pcre.org/pub/pcre/pcre-${PCRE_VERSION}.tar.gz
 headers_more_nginx_module_url=https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz
 uuid4_url=https://github.com/cybozu/nginx-uuid4-module/archive/${UUID4_VERSION}.tar.gz
 zlib_url=http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
-luajit_url=https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz
-ngx_devel_url=https://github.com/vision5/ngx_devel_kit/archive/v${NGX_DEVEL_VERSION}.tar.gz
-lua_url=https://github.com/openresty/lua-nginx-module/archive/v${LUA_VERSION}.tar.gz
-set_misc_url=https://github.com/openresty/set-misc-nginx-module/archive/v${SET_MISC_VERSION}.tar.gz
 aws_auth_url=https://github.com/kaltura/nginx-aws-auth-module/archive/1.0.1.tar.gz
 ngx_subs_url=https://github.com/yaoweibin/ngx_http_substitutions_filter_module/archive/v0.6.4.tar.gz
 
@@ -48,33 +40,12 @@ echo "Downloading $headers_more_nginx_module_url"
 echo "Downloading $uuid4_url"
 (cd nginx-${NGINX_VERSION} && curl -L $uuid4_url | tar xvz )
 
-echo "Downloading $luajit_url"
-(
-  cd nginx-${NGINX_VERSION} && curl -L $luajit_url | tar xvz
-  cd ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}
-  make PREFIX=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/ install
-)
-
-echo "Downloading $ngx_devel_url"
-(cd nginx-${NGINX_VERSION} && curl -L $ngx_devel_url | tar xvz)
-
-echo "Downloading $lua_url"
-(cd nginx-${NGINX_VERSION} && curl -L $lua_url | tar xvz)
-
-echo "Downloading $set_misc_url"
-(cd nginx-${NGINX_VERSION} && curl -L $set_misc_url | tar xvz)
-
 echo "Downloading $aws_auth_url"
 (cd nginx-${NGINX_VERSION} && curl -L $aws_auth_url | tar xvz)
 
 echo "Downloading $ngx_subs_url"
 (cd nginx-${NGINX_VERSION} && curl -L $ngx_subs_url | tar xvz)
 
-release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
-mv ${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/lib $release_dir/luajit
-
-export LUAJIT_LIB=$release_dir/luajit
-export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/include/luajit-2.1
 
 # This will build `nginx`
 (
@@ -86,11 +57,7 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx \
-    --with-ld-opt="-Wl,-rpath=app/bin/luajit,-L$LUAJIT_LIB" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1 \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_substitutions_filter_module-0.6.4
@@ -108,16 +75,14 @@ export LUAJIT_INC=${temp_dir}/nginx-${NGINX_VERSION}/luajit2-${LUAJIT_VERSION}/i
     --with-http_realip_module \
     --with-http_ssl_module \
     --prefix=/tmp/nginx-debug \
-    --with-ld-opt="-Wl,-rpath=app/bin/luajit,-L$LUAJIT_LIB" \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_devel_kit-${NGX_DEVEL_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/lua-nginx-module-${LUA_VERSION} \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/set-misc-nginx-module-${SET_MISC_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1 \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_substitutions_filter_module-0.6.4
   make install
 )
+
+release_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
 cp /tmp/nginx/sbin/nginx $release_dir/nginx
 cp /tmp/nginx-debug/sbin/nginx $release_dir/nginx-debug
