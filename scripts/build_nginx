@@ -19,6 +19,7 @@ uuid4_url=https://github.com/cybozu/nginx-uuid4-module/archive/${UUID4_VERSION}.
 zlib_url=http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
 aws_auth_url=https://github.com/kaltura/nginx-aws-auth-module/archive/1.0.1.tar.gz
 ngx_subs_url=https://github.com/yaoweibin/ngx_http_substitutions_filter_module/archive/v0.6.4.tar.gz
+ngx_brotli_url=https://github.com/google/ngx_brotli.git
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -45,6 +46,9 @@ echo "Downloading $aws_auth_url"
 
 echo "Downloading $ngx_subs_url"
 (cd nginx-${NGINX_VERSION} && curl -L $ngx_subs_url | tar xvz)
+
+echo "Downloading $ngx_brotli_url"
+(cd nginx-${NGINX_VERSION} && git clone --recursive $ngx_brotli_url )
 
 
 # This will build `nginx`
@@ -74,6 +78,7 @@ echo "Downloading $ngx_subs_url"
     --with-http_gzip_static_module \
     --with-http_realip_module \
     --with-http_ssl_module \
+    --with-http_geoip_module \
     --prefix=/tmp/nginx-debug \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
