@@ -21,6 +21,7 @@ zlib_url=http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
 aws_auth_url=https://github.com/kaltura/nginx-aws-auth-module/archive/1.0.1.tar.gz
 ngx_subs_url=https://github.com/yaoweibin/ngx_http_substitutions_filter_module/archive/v0.6.4.tar.gz
 ngx_brotli_url=https://github.com/google/ngx_brotli.git
+ngx_http_geoip2=https://github.com/leev/ngx_http_geoip2_module.git
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -51,6 +52,9 @@ echo "Downloading $ngx_subs_url"
 echo "Downloading $ngx_brotli_url"
 (cd nginx-${NGINX_VERSION} && git clone --recursive $ngx_brotli_url )
 
+echo "Downloading $ngx_http_geoip2"
+(cd nginx-${NGINX_VERSION} && git clone --recursive $ngx_http_geoip2 )
+
 
 # This will build `nginx`
 (
@@ -61,13 +65,13 @@ echo "Downloading $ngx_brotli_url"
     --with-http_gzip_static_module \
     --with-http_realip_module \
     --with-http_ssl_module \
-    --with-http_geoip_module \
     --prefix=/tmp/nginx \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1 \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_substitutions_filter_module-0.6.4 \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_brotli
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_brotli \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_geoip2_module
   make install
 )
 
@@ -86,7 +90,8 @@ echo "Downloading $ngx_brotli_url"
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-uuid4-module-${UUID4_VERSION} \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/nginx-aws-auth-module-1.0.1 \
     --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_substitutions_filter_module-0.6.4 \
-    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_brotli
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_brotli \
+    --add-module=${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_geoip2_module
   make install
 )
 
